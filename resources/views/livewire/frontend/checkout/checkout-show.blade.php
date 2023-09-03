@@ -2,8 +2,10 @@
     {{-- Close your eyes. Count to one. That is how long forever feels. --}}
     <div class="py-3 py-md-4 checkout">
         <div class="container">
-            <div class="d-flex justify-content-center align-items-center  mb-4">
-                <h1 class="btn btn-dark">CHECKOUT</h1>
+            <div class="col-md-12 mb-4 ">
+                <h4 class="text-center text-uppercase">Checkout</h4>
+                <div class="underline mx-auto"></div>
+
             </div>
             {{-- <hr> --}}
             @if ($this->totalProductAmount != 0)
@@ -31,44 +33,44 @@
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
                                         <label>Full Name</label>
-                                        <input type="text" wire:model.defer="fullname" class="form-control"
-                                            placeholder="Enter Full Name" />
+                                        <input type="text" wire:model.defer="fullname" id="fullname"
+                                            class="form-control" placeholder="Enter Full Name" />
                                         @error('fullname')
                                             <small class="text-danger">{{ $message }}</small>
                                         @enderror
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label>Phone Number</label>
-                                        <input type="text" wire:model.defer="phone" class="form-control"
-                                            placeholder="Enter Phone Number" />
+                                        <input type="text" wire:model.defer="phone" id="phone"
+                                            class="form-control" placeholder="Enter Phone Number" />
                                         @error('phone')
                                             <small class="text-danger">{{ $message }}</small>
                                         @enderror
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label>Email Address</label>
-                                        <input type="email" wire:model.defer="email" class="form-control"
-                                            placeholder="Enter Email Address" />
+                                        <input type="email" wire:model.defer="email" id="email"
+                                            class="form-control" placeholder="Enter Email Address" />
                                         @error('email')
                                             <small class="text-danger">{{ $message }}</small>
                                         @enderror
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label>Pin-code (Zip-code)</label>
-                                        <input type="number" wire:model.defer="pincode" class="form-control"
-                                            placeholder="Enter Pin-code" />
+                                        <input type="number" wire:model.defer="pincode" id="pincode"
+                                            class="form-control" placeholder="Enter Pin-code" />
                                         @error('pincode')
                                             <small class="text-danger">{{ $message }}</small>
                                         @enderror
                                     </div>
                                     <div class="col-md-12 mb-3">
                                         <label>Full Address</label>
-                                        <textarea wire:model.defer="address" class="form-control" rows="2"></textarea>
+                                        <textarea wire:model.defer="address" class="form-control" id="address" rows="2"></textarea>
                                         @error('address')
                                             <small class="text-danger">{{ $message }}</small>
                                         @enderror
                                     </div>
-                                    <div class="col-md-12 mb-3">
+                                    <div class="col-md-12 mb-3" wire:ignore>
                                         <label>Select Payment Mode: </label>
                                         <div class="d-md-flex align-items-start mt-2">
                                             <div class="nav col-md-3 flex-column nav-pills me-3 " id="v-pills-tab"
@@ -106,10 +108,10 @@
                                                     aria-labelledby="onlinePayment-tab" tabindex="0">
                                                     <h6>Online Payment Mode</h6>
                                                     <hr />
-                                                    <button type="button" wire:loading.attr="disabled"
-                                                        class="btn btn-warning text-white">Pay Now
-                                                        (Online
-                                                        Payment)</button>
+                                                    <div>
+                                                        <div id="paypal-button-container"></div>
+                                                    </div>
+
                                                 </div>
                                             </div>
                                         </div>
@@ -134,3 +136,94 @@
         </div>
     </div>
 </div>
+
+@push('scripts')
+    <script
+        src="https://www.paypal.com/sdk/js?client-id=AbrzFZiv74x_EfjiEXEuy1InmSojQsN2ZXWzVbXGx7eQ73PXmXD2x9DEhXggPHLdMLuz4fQF4Pij3j0B&currency=USD">
+    </script>
+    <script>
+        paypal.Buttons({
+            onClick() {
+                // Show a validation error if the checkbox is not checked
+                if (!document.getElementById('fullname').value || !document.getElementById('phone').value ||
+                    !document.getElementById('email').value || !document.getElementById('pincode').value || !
+                    document.getElementById('address').value) {
+
+                    Livewire.emit('validationForAll');
+                    return false;
+                } else {
+                    @this.set('fullname', document.getElementById('fullname').value)
+                    @this.set('phone', document.getElementById('phone').value)
+                    @this.set('email', document.getElementById('email').value)
+                    @this.set('pincode', document.getElementById('pincode').value)
+                    @this.set('address', document.getElementById('address').value)
+                }
+
+            },
+            // Order is created on the server and the order id is returned
+
+            createOrder(data, actions) {
+                return actions.order.create({
+                    purchase_units: [{
+                        amount: {
+                            value: {{ $this->totalProductAmount }}
+                        }
+                    }],
+                })
+                // return fetch("/my-server/create-paypal-order", {
+                //         method: "POST",
+                //         headers: {
+                //             "Content-Type": "application/json",
+                //         },
+                //         // use the "body" param to optionally pass additional order information
+                //         // like product skus and quantities
+                //         body: JSON.stringify({
+                //             cart: [
+                //                 {
+                //                     sku: "YOUR_PRODUCT_STOCK_KEEPING_UNIT",
+                //                     quantity: "YOUR_PRODUCT_QUANTITY",
+                //                 },
+                //             ],
+                //         }),
+                //     })
+                //     .then((response) => response.json())
+                //     .then((order) => order.id);
+            },
+            // Finalize the transaction on the server after payer approval
+            onApprove(data, actions) {
+
+                return actions.order.capture().then(function(orderData) {
+                    console.log('Capture result', orderData, JSON.stringify(orderData, null, 2));
+                    const transaction = orderData.purchase_units[0].payments.captures[0];
+                    if (transaction.status == "COMPLETED") {
+                        Livewire.emit('transactionEmit', transaction.id);
+                    }
+                })
+                // return fetch("/my-server/capture-paypal-order", {
+                //         method: "POST",
+                //         headers: {
+                //             "Content-Type": "application/json",
+                //         },
+                //         body: JSON.stringify({
+                //             orderID: data.orderID
+                //         })
+                //     })
+                //     .then((response) => response.json())
+                //     .then((orderData) => {
+                //         // Successful capture! For dev/demo purposes:
+                //         console.log('Capture result', orderData, JSON.stringify(orderData, null, 2));
+                //         const transaction = orderData.purchase_units[0].payments.captures[0];
+                //         alert(
+                //             `Transaction ${transaction.status}: ${transaction.id}\n\nSee console for all available details`
+                //         );
+                //         // When ready to go live, remove the alert and show a success message within this page. For example:
+                //         // const element = document.getElementById('paypal-button-container');
+                //         // element.innerHTML = '<h3>Thank you for your payment!</h3>';
+                //         // Or go to another URL:  window.location.href = 'thank_you.html';
+                //     });
+
+            }
+
+        }).render('#paypal-button-container');
+    </script>
+@endpush

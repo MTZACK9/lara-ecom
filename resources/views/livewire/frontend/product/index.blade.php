@@ -35,43 +35,39 @@
         <div class="col-md-9">
             <div class="row">
                 @forelse ($products as $product)
-                    <div class="col-md-3">
-                        <div class="product-card">
-                            <div class="product-card-img">
+                    
+                    <div class="col-md-4">
+                        <div class="prodowl">
+                            <div class="product-card">
+                                <div class="badge">
+                                    @if ($product->quantity > 0)
+                                        <label class="bg-success p-2 rounded"><small>In Stock</small></label>
+                                    @else
+                                        <label class="bg-danger p-2 rounded"><small>Out Of Stock</small></label>
+                                    @endif
 
-                                @if ($product->quantity > 0)
-                                    <label class="stock bg-success">In Stock</label>
-                                @else
-                                    <label class="stock bg-danger">Out of Stock</label>
-                                @endif
-
-                                @if ($product->productImages->count() > 0)
-                                    <a
-                                        href="{{ route('viewProductsDet', [$product->category->slug, $product->slug]) }}">
-                                        <img src="{{ asset($product->productImages[0]->image) }}"
-                                            alt="{{ $product->name }}">
-                                    </a>
-                                @endif
-
-                            </div>
-                            <div class="product-card-body">
-                                <p class="product-brand">{{ $product->brand }}</p>
-                                <h5 class="product-name">
-                                    <a href="{{ route('viewProductsDet', [$product->category->slug, $product->slug]) }}"
-                                        class="text-dark">
-                                        {{ $product->name }}
-                                    </a>
-                                </h5>
-                                <div>
-                                    <span class="selling-price">${{ $product->selling_price }}</span>
-                                    <span class="original-price">${{ $product->original_price }}</span>
                                 </div>
-                                {{-- <div class="mt-2">
-                                    <a href="" class="btn btn1 btn-danger text-white">Add To Cart</a>
-                                    <a href="" class="btn btn1 btn-danger text-white"> <i class="fa fa-heart"></i>
-                                    </a>
-                                    <a href="" class="btn btn1 text-danger"> View </a>
-                                </div> --}}
+                                <div class="product-tumb">
+                                    @if ($product->productImages->count() > 0)
+                                        <a
+                                            href="{{ route('viewProductsDet', [$product->category->slug, $product->slug]) }}">
+                                            <img src="{{ asset($product->productImages[0]->image) }}"
+                                                alt="{{ $product->name }}">
+                                        </a>
+                                    @endif
+                                </div>
+                                <div class="product-details">
+                                    <span class="product-catagory">{{ $product->brand }}</span>
+                                    <h4><a
+                                            href="{{ route('viewProductsDet', [$product->category->slug, $product->slug]) }}">{{ $product->name }}</a>
+                                    </h4>
+
+                                    <div class="product-bottom-details">
+                                        <div class="product-price">
+                                            <small>${{ $product->original_price }}</small>${{ $product->selling_price }}
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -83,6 +79,7 @@
                         </div>
                     </div>
                 @endforelse
+
             </div>
         </div>
     </div>

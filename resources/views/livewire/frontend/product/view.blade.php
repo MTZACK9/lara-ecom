@@ -1,41 +1,39 @@
 <div>
-    <div class="py-3 py-md-5">
+
+    <div class="pb-3 pb-md-5 ">
         <div class="single-p">
 
             <div class=" small-container single-product">
-                <div>
 
-                    {{-- @if (session()->has('message'))
-                        <div class="alert alert-danger alert-dismissible fade show">
-
-                            {{ session('message') }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    @endif --}}
-
-                </div>
                 <div class="row">
-                    <div class="col-2">
+                    <div class="col-md-12 mb-3">
+                        <h4 class="text-center">Product Details</h4>
+                        <div class="underline mx-auto"></div>
+
+                    </div>
+                    <div class="col-2" wire:ignore>
                         @if ($product->productImages)
-                            <img src="{{ asset($product->productImages[0]->image) }}" width="100%" id="ProductImg" />
+                            <img class="d-block d-lg-none" src="{{ asset($product->productImages[0]->image) }}"
+                                width="100%" id="ProductImg" />
+
+                            <div class="exzoom d-none d-lg-block" id="exzoom">
+                                <div class="exzoom_img_box">
+                                    <ul class='exzoom_img_ul'>
+                                        @foreach ($product->productImages as $image)
+                                            <li><img src="{{ asset($image->image) }}" /></li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                                <div class="exzoom_nav"></div>
+                                {{-- <p class="exzoom_btn">
+                                    <a href="javascript:void(0);" class="exzoom_prev_btn">
+                                        < </a>
+                                            <a href="javascript:void(0);" class="exzoom_next_btn"> > </a>
+                                </p> --}}
+                            </div>
                         @else
                             No Image Found
                         @endif
-
-                        {{-- <div class="small-img-row mt-1">
-                            <div class="small-img-col">
-                                <img src="{{ asset($product->productImages[0]->image) }}" class="small-img" />
-                            </div>
-                            <div class="small-img-col">
-                                <img src="{{ asset($product->productImages[0]->image) }}" class="small-img" />
-                            </div>
-                            <div class="small-img-col">
-                                <img src="{{ asset($product->productImages[0]->image) }}" class="small-img" />
-                            </div>
-                            <div class="small-img-col">
-                                <img src="{{ asset($product->productImages[0]->image) }}" class="small-img" />
-                            </div>
-                        </div> --}}
                     </div>
                     <div class="col-2">
                         <h4 class="product-name">
@@ -164,3 +162,24 @@
         </div>
     </div>
 </div>
+
+
+@push('scripts')
+    <script>
+        $(function() {
+
+            $("#exzoom").exzoom({
+
+                "navWidth": 60,
+                "navHeight": 60,
+                "navItemNum": 5,
+                "navItemMargin": 7,
+                "navBorder": 1,
+                "autoPlay": false,
+                "autoPlayTimeout": 2000
+
+            });
+
+        });
+    </script>
+@endpush

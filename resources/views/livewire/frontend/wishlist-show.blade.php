@@ -1,8 +1,10 @@
 <div class="wishlist">
     <div class="py-3 py-md-5">
         <div class="container">
-            <div class="d-flex justify-content-center align-items-center  mb-4">
-                <h1 class="btn btn-dark">MY WISHLIST</h1>
+            <div class="col-md-12 mb-4 ">
+                <h4 class="text-center text-uppercase">My Wishlist</h4>
+                <div class="underline mx-auto"></div>
+
             </div>
             <div class="table-responsive">
                 <table class="table">

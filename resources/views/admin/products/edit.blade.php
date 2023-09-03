@@ -165,7 +165,14 @@
                                                 style="width:20px; height:20px;">
                                         </div>
                                     </div>
-
+                                    <div class="col-md-4">
+                                        <div class="mt-3">
+                                            <label for="">Featured</label>
+                                            <input type="checkbox" name="featured"
+                                                {{ $product->featured == '1' ? 'checked' : '' }}
+                                                style="width:20px; height:20px;">
+                                        </div>
+                                    </div>
                                     <div class="col-md-4">
                                         <div class="mt-3">
                                             <label for="">Status</label>

@@ -12,7 +12,7 @@
                 <div class="modal-body">
                     <div class="mb-3">
                         <label>Select Category</label>
-                        <select wire:model.defer="category_id" class="form-control">
+                        <select wire:model.defer="category_id" class="form-select">
                             <option value="">--Select category--</option>
                             @foreach ($categories as $category)
                                 <option value="{{ $category->id }}">{{ $category->name }}</option>
@@ -79,7 +79,7 @@
                     <div class="modal-body">
                         <div class="mb-3">
                             <label>Select Category</label>
-                            <select wire:model.defer="category_id" class="form-control">
+                            <select wire:model.defer="category_id" class="form-select">
                                 <option value="">--Select category--</option>
                                 @foreach ($categories as $category)
                                     <option value="{{ $category->id }}">{{ $category->name }}</option>

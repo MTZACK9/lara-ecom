@@ -6,13 +6,17 @@ use App\Models\Slider;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Product;
 
 class FrontendController extends Controller
 {
     public function index()
     {
         $sliders = Slider::where('status', '0')->get();
-        return view('frontend.index', compact('sliders'));
+        $trendingProducts = Product::where('trending', 1)->latest()->take(15)->get();
+        $newArrivalProducts = Product::latest()->take(15)->get();
+        $featuredProducts = Product::where('featured', '1')->latest()->take(15)->get();
+        return view('frontend.index', compact('sliders', 'trendingProducts', 'newArrivalProducts', 'featuredProducts'));
     }
 
     public function categories()
@@ -46,5 +50,26 @@ class FrontendController extends Controller
             return redirect()->back();
         }
     }
-    
+
+    public function newArrival()
+    {
+        $newArrivalProducts = Product::where('status', '0')->latest()->take(16)->get();
+        return view('frontend.pages.new-arrival', compact('newArrivalProducts'));
+    }
+    public function featured()
+    {
+        $featuredProducts = Product::where('featured', '1')->where('status', '0')->latest()->take(16)->get();
+        return view('frontend.pages.featured', compact('featuredProducts'));
+    }
+
+    public function searchProducts(Request $request)
+    {
+        if ($request->search) {
+            $searchHistory = $request->search;
+            $searchProducts =  Product::where('status', '0')->where('name', 'LIKE', '%' . $request->search . '%')->latest()->paginate(15);
+            return view('frontend.pages.search', compact('searchProducts', 'searchHistory'));
+        } else {
+            return redirect()->back();
+        }
+    }
 }

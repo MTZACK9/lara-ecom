@@ -24,6 +24,15 @@
     {{--    @vite(['resources/sass/app.scss', 'resources/js/app.js']) --}}
 
     <link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet">
+
+    {{-- Owl Carousel --}}
+    <link href="{{ asset('assets/css/owl.carousel.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/css/owl.theme.default.min.css') }}" rel="stylesheet">
+
+    {{-- Exzoom --}}
+    <link href="{{ asset('assets/exzoom/jquery.exzoom.css') }}" rel="stylesheet">
+
+
     <link rel="stylesheet" href="{{ asset('assets/css/custom.css') }}">
     {{-- Alertify.js --}}
     <!-- CSS -->
@@ -42,6 +51,8 @@
         <main>
             @yield('content')
         </main>
+
+        @include('layouts.inc.frontend.footer')
     </div>
 
     <script src="{{ asset('assets/js/jquery-3.6.3.min.js') }}"></script>
@@ -50,12 +61,20 @@
     <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
     <script>
         window.addEventListener('message', event => {
-            alertify.set('notifier', 'position', 'bottom-right');
-            alertify.notify(event.detail.text, event.detail.type);
+            if (event.detail) {
+                alertify.set('notifier', 'position', 'bottom-right');
+                alertify.notify(event.detail.text, event.detail.type);
+            }
         })
     </script>
 
+    <script src="{{ asset('assets/js/owl.carousel.min.js') }}"></script>
+    <script src="{{ asset('assets/exzoom/jquery.exzoom.js') }}"></script>
+    @yield('script')
+
+
     @livewireScripts
+    @stack('scripts')
 </body>
 
 </html>
